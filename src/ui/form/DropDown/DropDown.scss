@@ -1,0 +1,53 @@
+:root {
+	--dd-bg-color: #fff;
+	--dd-active-color: #f6f6f6;
+	--dd-hover-color: #ececec;
+	--dd-border-color: #d0d0d0;
+}
+
+.haki-ui.DropDown-container {
+	position: relative;
+
+	.DropDown-options-container {
+		position: absolute;
+		background: var(--dd-bg-color);
+		width: 100%;
+		border: 1px solid var(--dd-border-color);
+	}
+	.DropDown-selected-value-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		justify-content: space-between;
+		gap: 4px;
+		min-width: 60px;
+		padding: 4px 8px;
+		background: var(--dd-bg-color);
+		border: 1px solid var(--dd-border-color);
+		cursor: pointer;
+		border-radius: 2px;
+		z-index: 11;
+	}
+	.DropDown-selected-value-container.dummy {
+		z-index: 10;
+	}
+	.disabled.DropDown-selected-value-container {
+		cursor: not-allowed;
+		opacity: 0.5;
+		user-select: none;
+	}
+	.DropDown-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 4px 8px;
+	}
+	.DropDown-item:hover {
+		background: var(--dd-hover-color);
+	}
+	.DropDown-item.active {
+		background: var(--dd-active-color);
+	}
+}
