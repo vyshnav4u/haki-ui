@@ -50,4 +50,20 @@
 	.DropDown-item.active {
 		background: var(--dd-active-color);
 	}
+	.DropDown-search-box{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		input{
+			width: 100%;
+			padding: 4px 8px;
+			border: 1px solid var(--dd-border-color);
+		}
+		.search-icon {
+			position: absolute;
+			width: fit-content;
+			left: 4px;
+			justify-content: flex-start;
+		}
+	}
 }

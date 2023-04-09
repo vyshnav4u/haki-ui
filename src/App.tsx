@@ -12,7 +12,7 @@ function App() {
 			Hello Welcome
 			<div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
 				<div>
-					<DropDown showCheckMarkOnSelection options={options} selectedValue="two" />
+					<DropDown showSearchIcon enableSearch showCheckMarkOnSelection options={options} selectedValue="two" />
 					start
 				</div>
 				<div> start</div>

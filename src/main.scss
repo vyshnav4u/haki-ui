@@ -5,5 +5,12 @@
         padding: 0;
         line-height: 1;
         font-size: 16px;
+        outline: none;
+        max-width: 100%;
+        font-family: system-ui;
+        position: relative;
+    }
+    ul,li{
+        list-style: none;
     }
 }

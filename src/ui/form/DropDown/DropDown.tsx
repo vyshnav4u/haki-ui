@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import classNames from 'classnames';
 import './DropDown.scss';
 import KeyboardDownArrow from '../../../icons/icon-components/KeyboardDownArrow';
-import Check from '../../../icons/icon-components/Check';
+import Option from './Option';
+import Search from '../../../icons/icon-components/Search';
 
-interface IDropDownOption {
+const ICON_SIZE_OFFSET = 4;
+const H_PADDING = 4;
+export interface IDropDownOption {
 	label: string;
 	value: string;
 }
 
-interface IFontProps {
-	fontSize?: React.CSSProperties['fontSize'];
+export interface IFontProps {
+	fontSize?: number;
 	fontColor?: React.CSSProperties['color'];
 	fontFamily?: React.CSSProperties['fontFamily'];
 }
@@ -22,15 +24,34 @@ interface IDropDown {
 	showCheckMarkOnSelection?: boolean;
 	fontProps?: IFontProps;
 	dropDownOpenToTop?: boolean;
+	enableSearch?: boolean;
+	showSearchIcon?: boolean;
+	searchPlaceHolder?: string;
+	minWidth?: number;
 }
 
 const DropDown = (props: IDropDown) => {
-	const { options, selectedValue, disabled, showCheckMarkOnSelection, dropDownOpenToTop } = props;
+	const {
+		options,
+		selectedValue,
+		disabled,
+		showCheckMarkOnSelection,
+		dropDownOpenToTop,
+		enableSearch,
+		fontProps = { fontSize: 16 },
+		showSearchIcon,
+		searchPlaceHolder,
+		minWidth = 120,
+	} = props;
+	const { fontSize } = fontProps;
 	if (!options.length || disabled) return <DisabledDropDown />;
 
-	const iconSize = 20;
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+	const [searchKeyWord, setSearchKeyword] = useState('');
+	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchKeyword(e.target.value);
+	};
 	useEffect(() => {
 		const itemIndex = options.findIndex((option) => option.value === selectedValue);
 		if (itemIndex !== -1) {
@@ -38,45 +59,58 @@ const DropDown = (props: IDropDown) => {
 		}
 	}, []);
 	const openCloseDropDown = () => setIsDropdownOpen(!isDropdownOpen);
-	const onDropDownItemClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, itemIndex: number) => {
+	const onDropDownItemClick = (itemIndex: number) => {
 		setIsDropdownOpen(false);
 		setSelectedItemIndex(itemIndex);
 	};
 
 	const selectedItem = options[selectedItemIndex];
-	const dropDownContainerStyle: React.CSSProperties = {};
+	const dropDownContainerStyle: React.CSSProperties = {minWidth};
+	const dropDownOptionContainerStyle: React.CSSProperties = {};
 	if (dropDownOpenToTop) {
-		dropDownContainerStyle.bottom = '0';
+		dropDownOptionContainerStyle.bottom = '0';
 	} else {
-		dropDownContainerStyle.top = '0';
+		dropDownOptionContainerStyle.top = '0';
 	}
 	return (
-		<section className="haki-ui DropDown-container">
+		<section style={dropDownContainerStyle} className="haki-ui DropDown-container">
 			<button className="DropDown-selected-value-container" onClick={openCloseDropDown}>
-				<label> {selectedItem.label} </label> <KeyboardDownArrow height={iconSize} width={iconSize} />
+				<label style={{ ...fontProps }}> {selectedItem.label} </label>{' '}
+				<KeyboardDownArrow height={fontSize} width={fontSize} />
 			</button>
 			{isDropdownOpen && (
-				<ul className="DropDown-options-container" style={dropDownContainerStyle}>
+				<ul className="DropDown-options-container" style={dropDownOptionContainerStyle}>
 					{/* To adjust spacing issue adding this */}
 					{!dropDownOpenToTop && (
 						<button className="DropDown-selected-value-container dummy">
-							<label> {selectedItem.label} </label> <KeyboardDownArrow height={iconSize} width={iconSize} />
+							<label style={{ ...fontProps }}> {selectedItem.label} </label>{' '}
+							<KeyboardDownArrow height={fontSize} width={fontSize} />
 						</button>
 					)}
-					{options.map((option, optionIndex) => (
-						<li
-							key={option.value}
-							className={classNames('DropDown-item', { active: option.value === selectedItem.value })}
-							onClick={(e) => onDropDownItemClick(e, optionIndex)}
-						>
-							<label> {option.label} </label>
-							{option.value === selectedItem.value && showCheckMarkOnSelection && <Check height={iconSize} width={iconSize} />}
+					{enableSearch && (
+						<li className="DropDown-search-box">
+							<input style={{paddingLeft: Number(fontSize) + ICON_SIZE_OFFSET + H_PADDING}} type="text" value={searchKeyWord} onChange={handleSearch} placeholder={searchPlaceHolder ?? 'Search'} />
+							{showSearchIcon && <Search fill='#5d5b5b' containerClassName='search-icon' height={Number(fontSize) + ICON_SIZE_OFFSET} width={Number(fontSize) + ICON_SIZE_OFFSET} />}
 						</li>
+					)}
+					{options.map((option, optionIndex) => (
+						<Option
+							key={option.value}
+							option={option}
+							optionIndex={optionIndex}
+							selectedItem={selectedItem}
+							fontProps={fontProps}
+							onDropDownItemClick={onDropDownItemClick}
+							showCheckMarkOnSelection={showCheckMarkOnSelection}
+							enableSearch= {enableSearch}
+							searchKeyWord= {searchKeyWord}
+						/>
 					))}
 					{/* To adjust spacing issue adding this */}
 					{dropDownOpenToTop && (
 						<button className="DropDown-selected-value-container dummy">
-							<label> {selectedItem.label} </label> <KeyboardDownArrow height={iconSize} width={iconSize} />
+							<label style={{ ...fontProps }}> {selectedItem.label} </label>
+							<KeyboardDownArrow height={fontSize} width={fontSize} />
 						</button>
 					)}
 				</ul>
